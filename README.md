@@ -5,4 +5,4 @@ The code is written in MATLAB-VTK and FORTRAN.
 
 ![](triangle.gif)
 
-For more information: https://www.researchgate.net/publication/335229479_Phase_field_crystal_modeling_of_graphenehexagonal_boron_nitride_interfaces.
+For more information: Shrikant S. Channe. Phase-field crystal modeling of graphene/hexagonal boron nitride interfaces. Phys. Chem. Chem. Phys., 2024,26, 13463-13479. https://doi.org/10.1039/D3CP05265F

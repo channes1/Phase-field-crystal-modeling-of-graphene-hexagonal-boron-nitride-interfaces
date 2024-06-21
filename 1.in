@@ -1,3 +1,4 @@
+! Input file for heterostructure.f90 file
 ! Seed random number generators
 ! 0: random seed, else: user-defined
 ! seed

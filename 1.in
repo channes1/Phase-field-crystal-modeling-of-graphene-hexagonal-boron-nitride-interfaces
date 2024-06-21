@@ -1,0 +1,62 @@
+! Seed random number generators
+! 0: random seed, else: user-defined
+! seed
+S = 0
+
+! Output (O)
+! T_print, T_write: interval for printing, interval for saving state
+! T_print   T_write
+O = 100, 1000
+
+! Configure arrays and FFTW plans (A)
+! W   H
+A = 1024, 1024
+
+! Initialization (I)
+! W, H: width, height
+! dx, dy: x-, y-discretization
+! l0, l_BN: dimensionless lattice constant, ratio of HBN and graphene lattice constants
+! x: fraction of HBN phase to graphene phase
+! A_i: initial amplitude of crystalline state
+! theta_i: rotation angle of phase i
+! p_i^l, p_i^s: average density of liquid, solid state
+
+! R: crystallite radius (dimensionless units)
+! phases: 0: graphene crystallite, HBN matrix, 1: HBN crystallite, graphene matrix
+! u_i, v_i: offset to lattice of phase i (dimensionless)
+! embedded crystallite
+! type  dx  dy  l0     l_BN    R    phases   p_C_l        p_C_s       A_C  theta_C u_C  v_C  p_BN_l      p_BN_s     A_BN theta_BN u_BN v_BN
+I =  0.7, 0.7, 7.2552, 1.018, 10.0, 0, -0.359386, -0.277795, -0.1, 0.0, 0.0, 0.0, 0.284158, 0.220896, 0.1, 0.0, 0.0, 0.0
+
+! Model (M) model parameters
+! gamma_i^l, gamma_i^s: values of "chemical potential fields" for liquid (disordered) and solid states
+! lambda_BN = (lattice constant of HBN) / (lattice constant of graphene)
+! sigma_u, sigma_mask: standard deviations for smoothed average density fields (this one in k-space so making it smaller blurs density more) and mask function (in direct space)
+!
+! alpha_C    beta_C    gamma_C^l     gamma_C^s  delta_C
+! alpha_BN   beta_BN   gamma_BN^l    gamma_BN^s delta_BN
+! alpha_B,N  beta_B,N  gamma_B,N
+! alpha_C,B  gamma_C,B
+! alpha_C,N  gamma_C,N
+! alpha_B,C  gamma_B,C
+! alpha_N,C  gamma_N,C
+! lambda_BN
+! sigma_u    sigma_mask
+!
+M = -0.207087, 1.0, -0.083910, 0.068284, 1.0, &
+    -0.198753, 1.0, 0.085655, -0.069021, 1.0, &
+    0.5, 0.02, 0.3, &
+    -0.120000, 0.000000, &
+    -0.12, 0.0, &
+    -0.120000, 0.000000, &
+    -0.12, 0.0, &
+    1.018, &
+    0.2, 0.2
+
+! Relaxation (R)
+! T: total number of time steps
+! dx, dy, dt: x-, y-, time-discretization
+! T_optimize: interval for calculation box optimization
+! T    dx  dy  dt  T_optimize
+R = 10000, 0.7, 0.7, 0.5, 100
+

@@ -175,10 +175,11 @@ module utilities
     use constants
     use data_types
     use fftwa3_mpi
-!    include 'mpif.h'
-!    use mpi_f08
+    !use mpi 
+    !use mpi_f08
+    
     implicit none
-
+  !  include 'mpif.h'
     contains
 
     subroutine seed_rngs(relax, input)
@@ -187,9 +188,10 @@ module utilities
         implicit none
         type(Relaxation), intent(inout) :: relax
         integer(c_int), intent(in) :: input
+        integer :: MPI_INTEGER, MPI_COMM_WORLD, MPI_STATUS_SIZE
 
         integer, allocatable :: seed(:)
-        integer :: ierr, status(MPI_STATUS_SIZE)
+         integer :: ierr, status(MPI_STATUS_SIZE)
         character(len=20) :: str_seed
 
         ! Read seed from the input file
@@ -220,7 +222,7 @@ MPI_COMM_WORLD, ierr)
     subroutine configure_arrays(arra, input)
         type(Arrays), intent(inout) :: arra
         integer(c_int), intent(in) :: input
-        integer :: lWHh, lWHp
+        integer :: lWHh, lWHp, MPI_COMM_WORLD
 
         ! Read system width and height
         read(input, *) arra%W, arra%H
@@ -428,8 +430,10 @@ l0 / sqrt(3.0d0) + v_BN, l_BN * l0, theta_BN)
         character(len=128) :: filename
         integer :: Wp, i, w, h, k
         real(8) :: v_C, v_BN, dv
-        integer :: file, ierr
+        integer :: file, ierr, MPI_STATUS_SIZE
         integer :: status(MPI_STATUS_SIZE)
+
+        integer :: MPI_COMM_WORLD 
 
         Wp = 2 * (arra%W / 2 + 1)
         write(filename, '(A, "_t:", I0, ".dat")') trim(outp%name), & 
@@ -590,6 +594,9 @@ P_scale_Ps_B(:), P_scale_Ps_N(:)
         type(Model), intent(in) :: mmode
         type(Relaxation), intent(inout) :: relax
 
+        integer:: MPI_IN_PLACE, MPI_DOUBLE, MPI_MIN, MPI_MAX, MPI_SUM
+        integer :: ierr, MPI_COMM_WORLD
+ 
         integer :: Wp, w, h, k, gw
         real(8) :: dkx, dky, kx2, ky, k2, d2
         real(8) :: q2, div3, a, divWH
@@ -741,13 +748,13 @@ p_fp_N * p_C2))
 
         ! Communication between processes
         call MPI_Allreduce(MPI_IN_PLACE, relax%f_C, 1, MPI_DOUBLE, & 
-MPI_SUM, MPI_COMM_WORLD)
+MPI_SUM, MPI_COMM_WORLD, ierr)
         call MPI_Allreduce(MPI_IN_PLACE, relax%f_BN, 1, MPI_DOUBLE, & 
-MPI_SUM, MPI_COMM_WORLD)
+MPI_SUM, MPI_COMM_WORLD, ierr)
         call MPI_Allreduce(MPI_IN_PLACE, relax%p_rex_C, 1, MPI_DOUBLE, & 
-MPI_SUM, MPI_COMM_WORLD)
+MPI_SUM, MPI_COMM_WORLD, ierr)
         call MPI_Allreduce(MPI_IN_PLACE, relax%p_rex_BN, 1, MPI_DOUBLE, & 
-MPI_SUM, MPI_COMM_WORLD)
+MPI_SUM, MPI_COMM_WORLD, ierr)
 
         divWH = 1.0d0 / (arra%W * arra%H)
         relax%f_C = relax%f_C * divWH
@@ -770,7 +777,10 @@ MPI_SUM, MPI_COMM_WORLD)
         type(Model), intent(in) :: mmode
         type(Relaxation), intent(in) :: relax
 
+        integer :: MPI_DOUBLE, MPI_MAX, MPI_MIN, MPI_COMM_WORLD  
+
         integer :: Wp, w, gw, h, k
+        integer :: MPI_IN_PLACE
         real(8) :: divWH, ky, kx2, k2, a, dkx, dky
         real(8), pointer :: Uu_C(:), Uu_BN(:)
 
@@ -1096,15 +1106,19 @@ end module utilities
 
 program heterostructure
   use, intrinsic :: iso_c_binding
-  use mpi
-!    include 'mpi.h'
+ ! use mpi
+  use omp_lib
+   
     use fftwa3_mpi
     use constants
     use data_types
     use utilities
 !    use mpi_f08
- !   include 'fftw3.f03'
+
     implicit none
+!    include 'aslfftw3-mpi.f03'
+!   include 'mpi.h'
+!   include 'fftw3.f03'
 
     type(Arrays) :: arra
     type(Model) :: mmode

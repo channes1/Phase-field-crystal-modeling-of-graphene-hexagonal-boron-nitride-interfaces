@@ -1,5 +1,4 @@
 function CBNvisual(input, output, Lx, Ly, start, incr, endVal)
-    % Function to convert the provided Java code to MATLAB
     if nargin < 7
         start = 0;
         incr = 1;
@@ -50,7 +49,7 @@ function CBNvisual(input, output, Lx, Ly, start, incr, endVal)
             min_u_BN = 1.0E100;
             max_u_BN = -1.0E100;
             
-            % Read the rest of the data
+            % Read the data
             for j = 1:Ly
                 for r = 1:Lx
                     line = fgetl(fid);
@@ -93,11 +92,11 @@ function CBNvisual(input, output, Lx, Ly, start, incr, endVal)
                     g = uint8(255 * map(u_BN, min_u_BN, max_u_BN) * map(N, min_N, max_N));
                     b = uint8(255 * map(u_C, max_u_C, min_u_C) * map(C, min_C, max_C));
                     
-                    image(Ly - j + 1, i, :) = [r, g, b];  % Flip the y-axis to match Java behavior
+                    image(Ly - j + 1, i, :) = [r, g, b];  % Flip the y-axis
                 end
             end
             
-            % Save the image as a PNG
+            % Save the image
             imwrite(image, output);
         end
     end
@@ -108,5 +107,5 @@ function result = map(x, minVal, maxVal)
     result = (x - minVal) / (maxVal - minVal);
 end
 % to run the code: 
-%CBNvisual('(txt data file)', 'outputFile.png', 1024, 1024, 0, 1, 10);
+% CBNvisual('(txt data file)', 'outputFile.png', 1024, 1024, 0, 1, 10);
 %

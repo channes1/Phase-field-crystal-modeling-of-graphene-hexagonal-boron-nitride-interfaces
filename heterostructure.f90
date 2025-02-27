@@ -339,11 +339,11 @@ relax%T_optimize
         real(8) :: qx, qy, cosine, sine, x, y
         real(8) :: oma_a
 
-        qx = 2.0d0 * pi / l0       ! wave numbers
-        qy = qx / sqrt(3.0d0)
+        qx = 2.0d0 * pi / l0       ! wave number
+        qy = qx / sqrt(3.0d0)      ! wave number
         cosine = cos(theta)
         sine = sin(theta)
-        x = cosine * x0 - sine * y0 + u       ! rotation matrix applied
+        x = cosine * x0 - sine * y0 + u       ! rotation matrix 
         y = sine * x0 + cosine * y0 + v
         oma_a = cos(qx * x) * cos(qy * y) + 0.5d0 * cos(2.0d0 * qy * y)
     end function OMA
